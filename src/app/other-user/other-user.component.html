@@ -1,0 +1,88 @@
+<app-nav-bar></app-nav-bar>
+<div class="d-flex justify-content-center mt-4" *ngIf="loading">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="container mt-3" *ngIf="userData">
+  <a href="/user" style="text-decoration:none;color: black">
+    < Back to your page</a> <div class="row mt-3">
+      <div class="col-sm-3 card card-body float-left" style="border:none">
+        <div>
+          <img src="{{userData.avatar_url}}" class="rounded-circle" style="width:100%;height: auto;"
+            alt="Profile Picture">
+        </div>
+        <h3 class="card-title text-center">{{userData.name}}</h3>
+        <p class="card-subtitle text-center pt-0 mb-1">{{userData.login}}</p>
+        <p class="text-center">
+          <i class="fas fa-building" *ngIf="userData.company"></i>&nbsp;{{userData.company}} <br>
+          <i class="fas fa-globe" *ngIf="userData.blog"></i>&nbsp;<a href="{{userData.blog}}" target="_blank">{{userData.blog}}</a>
+        </p>
+        <a class="btn btn-secondary text-white" [href]="userData.html_url" target="_blank">GitHub Page</a>
+      </div>
+      <div class="col-sm-9">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link text-dark active" data-toggle="tab" href="#about" autofocus>About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" data-toggle="tab" href="#repos">Repositories <span class="badge badge-secondary badge-pill">{{userData.public_repos}}</span> </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" data-toggle="tab" href="#gists">Gists <span class="badge badge-secondary badge-pill">{{userData.public_gists}}</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" data-toggle="tab" href="#followers">Followers <span class="badge badge-secondary badge-pill">{{userData.followers}}</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" data-toggle="tab" href="#following">Following <span class="badge badge-secondary badge-pill">{{userData.following}}</span> </a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link text-dark" data-toggle="tab" href="#stars">Stars <span
+                  class="badge badge-pill badge-secondary">{{starCount}}</span> </a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div class="container tab-pane active" id="about">
+            <br>
+            <div class="card" *ngIf="userData.bio">
+              <div class="card-header">Bio</div>
+              <div class="card-body">
+                {{userData.bio}}
+              </div>
+            </div>
+            <div class="card pt-4 pb-4 bg-light text-secondary" *ngIf="!userData.bio">
+              <div class="card-body text-center "><i class="fas fa-frown-open fa-2x" style="display:inline-block;width:100%;text-align:center"></i>
+                <h5 class="card-title mt-2">No Bio found for the user</h5></div>
+            </div>
+            
+          </div>
+          <div id="repos" class="container tab-pane fade">
+            <br>
+            <app-repository [username]="username" class="mt-2" (error)="getErrorStatus($event)" [total]="userData.public_repos"></app-repository>
+            
+          </div>
+          <div id="gists" class="container tab-pane fade">
+            <br>
+            <app-gist [username]="username" class="mt-2" (error)="getErrorStatus($event)" [total]="userData.public_gists"></app-gist>
+          </div>
+          <div id="followers" class="container tab-pane fade" style="padding:5px;">
+            <app-follower [username]="username" class="mt-2" (error)="getErrorStatus($event)" [total]="userData.followers"></app-follower>
+            </div>
+            <div id="following" class="container tab-pane fade">
+              <app-following [username]="username" (error)="getErrorStatus($event)" class="mt-2" [total]="userData.following"></app-following>
+            </div>
+            <div id="stars" class="container tab-pane fade">
+                <app-star (starsCount)="getStarCount($event)" (error)="getErrorStatus($event)" [username]="username"></app-star>
+              </div>
+        </div>
+
+        
+      </div>
+</div>
+</div>
+
+<app-error [status]="status" *ngIf="status"></app-error>

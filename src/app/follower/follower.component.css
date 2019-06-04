@@ -1,0 +1,6 @@
+.card:nth-child(odd){
+    margin: 0.5rem
+}
+.card:nth-child(even){
+    margin: 0.5rem
+}
